@@ -1,0 +1,206 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Happy Birthday Ruchi ❤️</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body, html { width: 100%; height: 100%; font-family: 'Arial', sans-serif; overflow: hidden; }
+    .slide {
+      display: none;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      height: 100vh;
+      width: 100%;
+      flex-direction: column;
+      padding: 20px;
+    }
+    .active { display: flex; }.candle {
+  width: 30px;
+  height: 100px;
+  background: black;
+  position: relative;
+  border-radius: 5px;
+}
+
+.flame {
+  position: absolute;
+  top: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 35px;
+  height: 70px;
+  background: radial-gradient(circle at 50% 50%, gold 0%, orange 50%, red 70%, transparent 80%);
+  border-radius: 50%;
+  animation: flicker 0.2s infinite alternate;
+}
+
+@keyframes flicker {
+  0% { transform: translateX(-50%) scale(1); opacity: 1; }
+  100% { transform: translateX(-50%) scale(1.1); opacity: 0.8; }
+}
+
+@keyframes zoom {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.2); }
+}
+
+canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+}
+
+.balloon {
+  width: 30px;
+  height: 40px;
+  border-radius: 50%;
+  position: absolute;
+  animation: float 6s linear infinite;
+}
+
+.ribbon {
+  width: 2px;
+  height: 30px;
+  background: black;
+  position: absolute;
+  top: 40px;
+  left: 14px;
+}
+
+@keyframes float {
+  0% { transform: translateY(100vh); opacity: 1; }
+  100% { transform: translateY(-50vh); opacity: 0; }
+}
+
+  </style>
+</head>
+<body><!-- Slide 1 --><div class="slide active" id="slide1" style="background: #fff8dc; color: #333; flex-direction: column;">
+  <div id="countdown" style="font-size: 3rem; margin-top: 30px; margin-bottom: 40px; font-weight: bold; user-select: none;">3</div>
+  <div style="position: relative; margin-top: 40px;">
+    <div class="candle" style="margin: 0 auto; position: relative; top: 40px;">
+      <div class="flame"></div>
+    </div>
+  </div>
+  <h1 style="margin-top: 60px;">Happy Birthday Beautiful ❤️</h1>
+</div><!-- Slide 2 --><div class="slide" id="slide2" style="background: red; color: white;">
+  <p style="font-size: 2.5rem; animation: zoom 1.5s infinite alternate;">💌</p>
+  <p>Touch it</p>
+</div><!-- Slide 3 --><div class="slide" id="slide3" style="background: pink; color: black;">
+  <p style="font-size: 18px; margin-bottom: 20px; white-space: pre-wrap;">
+From the moment I met you at that wedding, you’ve been a quiet inspiration to me — someone who teaches by just being herself. The way you work hard, carry yourself, and stay true to your path… it honestly means a lot.All I’m really trying to say is: you mean a lot to me ☺️
+
+  </p>
+  <div onclick="nextSlide()" style="cursor: pointer; animation: zoom 1.5s infinite alternate;">
+    ⬇️<br><span style="font-size: 16px;">Next</span>
+  </div>
+</div><!-- Slide 4 --><div class="slide" id="slide4" style="background: lightyellow; color: black;">
+  <h2>Again, Thank You!<br>Have a great life and success ahead 🎉</h2>
+</div><!-- Slide 5 --><div class="slide" id="slide5" style="background: lightblue; color: black; position: relative;">
+  <h1 style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 2; text-align: center;">
+    Once Again, A Happy Birthday Ruchi ❤️
+  </h1>
+  <canvas id="fireworks"></canvas>
+</div><script>
+  let current = 1;
+
+  function nextSlide() {
+    const currentSlide = document.getElementById(`slide${current}`);
+    if (currentSlide) currentSlide.classList.remove('active');
+
+    current++;
+    const next = document.getElementById(`slide${current}`);
+    if (next) {
+      next.classList.add('active');
+
+      if (current === 4) {
+        setTimeout(() => nextSlide(), 3000);
+      }
+    }
+  }
+
+  let countdown = 3;
+  const countdownEl = document.getElementById("countdown");
+  const countdownInterval = setInterval(() => {
+    countdown--;
+    if (countdown > 0) {
+      countdownEl.textContent = countdown;
+    } else {
+      clearInterval(countdownInterval);
+      nextSlide();
+    }
+  }, 1000);
+
+  document.getElementById("slide2").addEventListener("click", () => nextSlide());
+
+  const canvas = document.getElementById('fireworks');
+  const ctx = canvas.getContext('2d');
+  canvas.width = innerWidth;
+  canvas.height = innerHeight;
+
+  const fireworks = [];
+
+  class Firework {
+    constructor(x, y, color) {
+      this.x = x;
+      this.y = y;
+      this.color = color;
+      this.radius = Math.random() * 3 + 2;
+      this.life = 100;
+      this.alpha = 1;
+    }
+
+    update() {
+      this.y -= 1;
+      this.life--;
+      this.alpha -= 0.01;
+    }
+
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${this.color},${this.alpha})`;
+      ctx.fill();
+    }
+  }
+
+  function animateFireworks() {
+    requestAnimationFrame(animateFireworks);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    fireworks.forEach((f, i) => {
+      f.update();
+      f.draw();
+      if (f.life <= 0) fireworks.splice(i, 1);
+    });
+
+    if (Math.random() < 0.3) {
+      for (let i = 0; i < 25; i++) {
+        fireworks.push(new Firework(
+          Math.random() * canvas.width,
+          canvas.height / 2 + Math.random() * 100,
+          `${Math.floor(Math.random()*255)},${Math.floor(Math.random()*255)},${Math.floor(Math.random()*255)}`
+        ));
+      }
+    }
+  }
+
+  animateFireworks();
+
+  const balloonColors = ["red", "blue", "green", "orange", "purple", "pink", "yellow"];
+  for (let i = 0; i < 25; i++) {
+    const balloon = document.createElement("div");
+    balloon.className = "balloon";
+    balloon.style.left = `${Math.random() * 100}%`;
+    balloon.style.background = balloonColors[i % balloonColors.length];
+    balloon.style.animationDelay = `${Math.random() * 5}s`;
+
+    const ribbon = document.createElement("div");
+    ribbon.className = "ribbon";
+    balloon.appendChild(ribbon);
+
+    document.getElementById("slide5").appendChild(balloon);
+  }
+</script></body>
+</html>
